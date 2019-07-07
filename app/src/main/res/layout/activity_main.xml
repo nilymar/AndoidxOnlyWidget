@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="ltr">
+
+    <TextView
+        android:id="@+id/forecast_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/regular_margin"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        tools:text="@string/settings_city_default" />
+
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/forecast_city">
+
+        <!-- Layout for a list of weather forecast -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            style="@style/recycler_view" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- Empty view is only visible when the list has no items. -->
+    <TextView
+        android:id="@+id/empty_view"
+        style="@style/empty_main_portrait"
+        tools:text="@string/no_data_available" />
+    <!-- progress bar view is only visible when the list is being created -->
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        style="@style/progress_main_portrait" />
+</RelativeLayout>
