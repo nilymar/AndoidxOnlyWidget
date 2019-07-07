@@ -25,7 +25,7 @@ compared to the one made in ExampleWeather API
 **************************************************************************************************************************************
 
 created custom preferences based on androidx.preference.DialogPreference (look at the example project here: 
-https://github.com/nilymar/TestingAndroidxPreferences
+https://github.com/nilymar/TestingAndroidxPreferences)
 
 **************************************************************************************************************************************
 
