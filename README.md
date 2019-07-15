@@ -36,4 +36,4 @@ try to fetch location from the device each time it runs its update
 
 **************************************************************************************************************************************
 
-![ezgifcom-video-cutter](https://user-images.githubusercontent.com/33417968/61210641-ce571780-a705-11e9-8b4c-2cdea36d3df9.gif)
+![ezgif com-resize (4)](https://user-images.githubusercontent.com/33417968/61210749-27bf4680-a706-11e9-8b4b-337bb02005ab.gif)
