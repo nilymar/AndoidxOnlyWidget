@@ -298,12 +298,22 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
     public void onPermissionsGranted(int requestCode, List<String> list) {
         // Some permissions have been granted
         Toast.makeText(getContext(), "Location permission approved", Toast.LENGTH_SHORT).show();
+        if (gpsRequestStatus) getLocation();
+        else {
+            SwitchPreference sp = getPreferenceScreen().findPreference(getResources().
+                    getString(R.string.settings_switch_key));
+            sp.setChecked(false);
+            Toast.makeText(getContext(), "Location permission approved but GPS is off", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> list) {
         // Some permissions have been denied
         Toast.makeText(getContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+        SwitchPreference sp = getPreferenceScreen().findPreference(getResources().
+                getString(R.string.settings_switch_key));
+        sp.setChecked(false);
     }
 
     @Override
