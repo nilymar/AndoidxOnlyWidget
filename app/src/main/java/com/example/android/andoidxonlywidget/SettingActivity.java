@@ -1,6 +1,5 @@
 package com.example.android.andoidxonlywidget;
 
-
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import static com.example.android.andoidxonlywidget.AppConstants.GPS_REQUEST;
 import static com.example.android.andoidxonlywidget.WidgetUpdateJobIntentService.ACTION_UPDATE_WEATHER_WIDGET_ONLINE;
 
 public class SettingActivity extends AppCompatActivity {
@@ -34,8 +34,8 @@ public class SettingActivity extends AppCompatActivity {
                 actionBar.setDisplayHomeAsUpEnabled(false); // remove the left caret
                 actionBar.setDisplayShowHomeEnabled(false); // remove the icon
             }
-
         }
+        // put the setting fragment in its frame
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings_container, new MySettingsFragment())
@@ -60,5 +60,19 @@ public class SettingActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GPS_REQUEST){
+            // if the requestCode is GPS_REQUEST - go to the fragment onActivityResult
+            MySettingsFragment fragment = (MySettingsFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.settings_container);
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 
 }
