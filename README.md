@@ -29,5 +29,11 @@ https://github.com/nilymar/TestingAndroidxPreferences)
 
 **************************************************************************************************************************************
 
+added switch preference that allow you to get the location for the weather from the device - you can see the sample project for fetching
+location from the device here: https://github.com/nilymar/ExampleDeviceLocation
+the location is fetched once and replace the location set in the 'city' preference. the widget will update with that location, and won't 
+try to fetch location from the device each time it runs its update
 
-![ezgif com-resize (2)](https://user-images.githubusercontent.com/33417968/60444587-3269de00-9c26-11e9-8663-22e3cca5d08e.gif)
+**************************************************************************************************************************************
+
+![ezgif com-resize (4)](https://user-images.githubusercontent.com/33417968/61210749-27bf4680-a706-11e9-8b4b-337bb02005ab.gif)
