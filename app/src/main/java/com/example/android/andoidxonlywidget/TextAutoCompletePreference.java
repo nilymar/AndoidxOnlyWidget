@@ -1,16 +1,13 @@
 package com.example.android.andoidxonlywidget;
-
 /*
 created this by adjusting the implementation of numberPickerPreference in the library here:
 https://github.com/h6ah4i/android-numberpickerprefcompat
  */
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-
 import androidx.preference.DialogPreference;
 
 public class TextAutoCompletePreference extends DialogPreference {
@@ -122,3 +119,4 @@ public class TextAutoCompletePreference extends DialogPreference {
     }
 
 }
+
