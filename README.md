@@ -40,4 +40,4 @@ added multiple widgets functionality - i.e. - you can install multiple widget on
 
 **************************************************************************************************************************************
 
-![ezgif com-resize (4)](https://user-images.githubusercontent.com/33417968/61210749-27bf4680-a706-11e9-8b4b-337bb02005ab.gif)
+![ezgif com-resize (5)](https://user-images.githubusercontent.com/33417968/61808641-79717a80-ae44-11e9-906a-4561f72b63c2.gif)
