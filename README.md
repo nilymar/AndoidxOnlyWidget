@@ -36,4 +36,8 @@ try to fetch location from the device each time it runs its update
 
 **************************************************************************************************************************************
 
+added multiple widgets functionality - i.e. - you can install multiple widget on home screen, with different settings
+
+**************************************************************************************************************************************
+
 ![ezgif com-resize (4)](https://user-images.githubusercontent.com/33417968/61210749-27bf4680-a706-11e9-8b4b-337bb02005ab.gif)
