@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:title="@string/settings_title">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/settings_switch_key"
+        android:title="@string/settings_switch_label"/>
 
     <com.example.android.andoidxonlywidget.TextAutoCompletePreference
         android:defaultValue="@string/settings_city_default"
