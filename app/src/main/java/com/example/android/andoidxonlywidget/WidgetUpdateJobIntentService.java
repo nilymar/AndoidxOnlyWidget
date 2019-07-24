@@ -1,23 +1,18 @@
 package com.example.android.andoidxonlywidget;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,31 +22,42 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import static com.example.android.andoidxonlywidget.AppConstants.SHARED_PREFERENCES;
+
 /**
  * An {@link JobIntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread - for Build.VERSION_CODES.O and up.
  */
 public class WidgetUpdateJobIntentService extends JobIntentService {
     public static final String LOG_TAG = WidgetUpdateJobIntentService.class.getName();
-    private static final String SHARED_PREFERENCES = "androidxonlywidget"; // name for sharedPreferences location
     public static final String ACTION_UPDATE_WEATHER_WIDGET_ONLINE =
             "com.example.android.androidxonlywidget.action.update_weather_widget_online";
     // base URL for the query the weather api (APIXU)
     private static final String APIXU_REQUEST_URL = "https://api.apixu.com/v1/current.json?";
     public static final String RECEIVER = "receiver";
     private static final int JOB_ID = 2;
+    // shared pref file for specific widget
+    public String widgetSharedPref;
+    public int widgetId;
+    public String providerName;
 
     // with this method we receive instructions to update the widget
-    public static void enqueueWork(Context context, ServiceResultReceiver workerResultReceiver, String action) {
+    public static void enqueueWork(Context context, ServiceResultReceiver workerResultReceiver, String action,
+                                   int widgetId, String comp) {
         Intent intent = new Intent(context, WidgetUpdateJobIntentService.class);
         intent.putExtra(RECEIVER, workerResultReceiver);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        intent.putExtra("provider", comp);
         intent.setAction(action);
         enqueueWork(context, WidgetUpdateJobIntentService.class, JOB_ID, intent);
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Log.i(LOG_TAG, "onHandleWork activated");
+        // to differentiate the widgets
+        widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        widgetSharedPref = SHARED_PREFERENCES + widgetId;
+        providerName = intent.getStringExtra("provider");
         if (intent.getAction() != null) {
             final String action = intent.getAction();
             if (ACTION_UPDATE_WEATHER_WIDGET_ONLINE.equals(action)) {
@@ -64,28 +70,29 @@ public class WidgetUpdateJobIntentService extends JobIntentService {
      * Handle action ACTION_UPDATE_WEATHER_WIDGET_ONLINE
      */
     public void handleActionUpdateWeatherWidget() {
-        Weather weather = null;
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds
-                (new ComponentName(this, WeatherWidgetProvider.class));
-        // get a reference to the ConnectivityManager to check state of network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        // get details on the currently active default data network
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
-        if (!isConnected) { // if there is no internet connection - don't show progress bar and set
-            Log.i(LOG_TAG, "handleActionUpdateWeatherWidget activated - no Internet");
-        }
-        else {
-            weather = WidgetQueryUtils.fetchWeather(createURI()); // fetch the weather data
-        }
-        WeatherWidgetProvider.updateWeatherWidgets(this, appWidgetManager, weather, appWidgetIds);
+            Weather weather = null;
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+            // get a reference to the ConnectivityManager to check state of network connectivity
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            // get details on the currently active default data network
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+            if (!isConnected) { // if there is no internet connection - don't show progress bar and set
+                Log.i(LOG_TAG, "handleActionUpdateWeatherWidget activated - no Internet");
+            } else {
+                weather = WidgetQueryUtils.fetchWeather(createURI()); // fetch the weather data
+            }
+            WeatherWidgetProvider.updateAppWidget(this, appWidgetManager, weather, widgetId);
     }
 
     public String createURI() {
         String queryCity = restorePreferences(getString(R.string.settings_city_key));
-        if (queryCity.isEmpty())
+        if (queryCity.isEmpty()) {
+            Log.i(LOG_TAG, "the city is empty");
+            savePreferences(getResources().getString(R.string.settings_city_key),
+                    getResources().getString(R.string.settings_city_default));
             queryCity = getResources().getString(R.string.settings_city_default);
+        }
         Uri baseUri = Uri.parse(APIXU_REQUEST_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
         uriBuilder.appendQueryParameter(getString(R.string.query_by_city), queryCity);
@@ -96,10 +103,18 @@ public class WidgetUpdateJobIntentService extends JobIntentService {
 
     // This method to restore the custom preferences data
     public String restorePreferences(String key) {
-        SharedPreferences myPreferences = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences myPreferences = getSharedPreferences(widgetSharedPref, Context.MODE_PRIVATE);
         if (myPreferences.contains(key))
             return myPreferences.getString(key, "");
         else return "";
+    }
+
+    // This method to store the custom preferences changes
+    private void savePreferences(String key, String value) {
+        SharedPreferences myPreferences = getSharedPreferences(widgetSharedPref, Context.MODE_PRIVATE);
+        SharedPreferences.Editor myEditor = myPreferences.edit();
+        myEditor.putString(key, value);
+        myEditor.apply();
     }
 
     // Helper methods related to requesting and receiving current weather from APIXU
