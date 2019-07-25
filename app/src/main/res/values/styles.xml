@@ -15,6 +15,14 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
     </style>
+    
+    <style name="widgetBigTitleWide">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/widget_big_text</item>
+        <item name="android:layout_margin">@dimen/very_small_margin</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
 
     <style name="widgetTextTitles">
         <item name="android:textStyle">bold</item>
