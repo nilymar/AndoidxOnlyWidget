@@ -44,4 +44,5 @@
     <string name="wind_dir">Wind dir\':</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="forecast_icon">forecast icon</string>
 </resources>
