@@ -1,45 +1,41 @@
 package com.example.android.andoidxonlywidget;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceDialogFragmentCompat;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 /*
 created this by adjusting the implementation of numberPickerPreferenceFragmentCompat in the library here:
 https://github.com/h6ah4i/android-numberpickerprefcompat
  */
+import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceDialogFragmentCompat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import static com.example.android.andoidxonlywidget.AppConstants.SHARED_PREFERENCES;
 
 public class TextAutoCompletePreferenceDialogFragment extends PreferenceDialogFragmentCompat {
-    // name of key for saving for state change (like rotating the screen
+    // name of key for saving for state change (like rotating the screen)
     private static final String SAVE_STATE_VALUE = "TextAutoCompletePreferenceDialogFragment.value";
-    // name for sharedPreferences location - saving for next time you open the app
-    private static final String SHARED_PREFERENCES = "androidxonlywidget";
     private AutoCompleteTextView mAutoCompleteTextView;
     private String mValue;
+    private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     @NonNull
-    public static TextAutoCompletePreferenceDialogFragment newInstance(@NonNull String key) {
+    public static TextAutoCompletePreferenceDialogFragment newInstance(@NonNull String key, int id) {
         final TextAutoCompletePreferenceDialogFragment fragment = new TextAutoCompletePreferenceDialogFragment();
         final Bundle args = new Bundle(1);
         args.putString(ARG_KEY, key);
+        args.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,6 +43,11 @@ public class TextAutoCompletePreferenceDialogFragment extends PreferenceDialogFr
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            widgetId = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+        }
         if (savedInstanceState == null) {
             // if it is first run after installation - get the default value
             mValue = getTextAutoCompletePreference().getDefaultValue();
@@ -115,17 +116,6 @@ public class TextAutoCompletePreferenceDialogFragment extends PreferenceDialogFr
             }
         }
        if (PLACES.length!=0) {
-//            // sorting the places alphabetically
-//            for(int i = 0; i<PLACES.length-1; i++) {
-//                for (int j = i+1; j<PLACES.length; j++) {
-//                    if(PLACES[i].compareTo(PLACES[j])>0) {
-//                        String temp = PLACES[i];
-//                        PLACES[i] = PLACES[j];
-//                        PLACES[j] = temp;
-//                    }
-//                }
-//            }
-            // setting the adapter on the autoCompleteTextView
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_dropdown_item_1line, PLACES);
             mAutoCompleteTextView.setAdapter(adapter);
@@ -160,7 +150,8 @@ public class TextAutoCompletePreferenceDialogFragment extends PreferenceDialogFr
         Activity activity = this.getActivity();
         SharedPreferences myPreferences;
         if (activity != null) {
-            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES + widgetId,
+                    Context.MODE_PRIVATE);
             SharedPreferences.Editor myEditor = myPreferences.edit();
             myEditor.putString(key, value);
             myEditor.apply();
@@ -172,7 +163,8 @@ public class TextAutoCompletePreferenceDialogFragment extends PreferenceDialogFr
         Activity activity = getActivity();
         SharedPreferences myPreferences;
         if (activity != null) {
-            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES + widgetId,
+                    Context.MODE_PRIVATE);
             if (myPreferences.contains(key))
                 return myPreferences.getString(key, "");
             else return "";

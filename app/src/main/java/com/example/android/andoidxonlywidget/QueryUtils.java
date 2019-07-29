@@ -1,12 +1,11 @@
 package com.example.android.andoidxonlywidget;
 
+import android.nfc.Tag;
 import android.text.TextUtils;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,9 +19,7 @@ import java.util.List;
 
 // Helper methods related to requesting and receiving weather forecast from APIXU
 public final class QueryUtils {
-    /**
-     * Tag for log messages
-     */
+    // Tag for log messages
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
     private static final int READ_TIMEOUT = 10000; /* milliseconds */
     private static final int CONNECT_TIMEOUT = 15000; /* milliseconds */

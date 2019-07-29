@@ -1,33 +1,34 @@
 package com.example.android.andoidxonlywidget;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.NumberPicker;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceDialogFragmentCompat;
-
 /*
 created this based on the implementation in the library here:
 https://github.com/h6ah4i/android-numberpickerprefcompat
 added default value to set in the numberPickerWheel, canceled the unitTextView
  */
+import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.NumberPicker;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceDialogFragmentCompat;
+import static com.example.android.andoidxonlywidget.AppConstants.SHARED_PREFERENCES;
+
 
 public class NumberPickerPreferenceDialogFragment extends PreferenceDialogFragmentCompat {
     private static final String SAVE_STATE_VALUE = "NumberPickerPreferenceDialogFragment.value";
-    private static final String SHARED_PREFERENCES = "androidxonlywidget";
     private NumberPicker mNumberPicker;
     private int mValue;
+    private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     @NonNull
-    public static NumberPickerPreferenceDialogFragment newInstance(@NonNull String key) {
+    public static NumberPickerPreferenceDialogFragment newInstance(@NonNull String key, int id) {
         final NumberPickerPreferenceDialogFragment fragment = new NumberPickerPreferenceDialogFragment();
         final Bundle args = new Bundle(1);
         args.putString(ARG_KEY, key);
+        args.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -35,6 +36,11 @@ public class NumberPickerPreferenceDialogFragment extends PreferenceDialogFragme
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            widgetId = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+        }
         if (savedInstanceState == null) {
             // if it is first run after installation - get the default value
             mValue = getNumberPickerPreference().getDefaultValue();
@@ -78,7 +84,7 @@ public class NumberPickerPreferenceDialogFragment extends PreferenceDialogFragme
         Activity activity = this.getActivity();
         SharedPreferences myPreferences;
         if (activity != null) {
-            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES + widgetId, Context.MODE_PRIVATE);
             SharedPreferences.Editor myEditor = myPreferences.edit();
             myEditor.putString(key, value);
             myEditor.apply();
@@ -90,7 +96,7 @@ public class NumberPickerPreferenceDialogFragment extends PreferenceDialogFragme
         Activity activity = getActivity();
         SharedPreferences myPreferences;
         if (activity != null) {
-            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+            myPreferences = activity.getSharedPreferences(SHARED_PREFERENCES + widgetId, Context.MODE_PRIVATE);
             if (myPreferences.contains(key))
                 return myPreferences.getString(key, "");
             else return "";

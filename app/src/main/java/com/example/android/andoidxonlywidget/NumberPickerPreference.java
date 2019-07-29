@@ -1,18 +1,14 @@
 package com.example.android.andoidxonlywidget;
-
 /*
 created this based on the implementation in the library here:
 https://github.com/h6ah4i/android-numberpickerprefcompat
-
 added default value to set in the numberPickerWheel, canceled the unitTextView
  */
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-
 import androidx.annotation.NonNull;
 import androidx.preference.DialogPreference;
 

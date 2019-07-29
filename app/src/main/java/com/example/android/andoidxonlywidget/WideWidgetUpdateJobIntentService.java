@@ -27,26 +27,25 @@ import static com.example.android.andoidxonlywidget.AppConstants.SHARED_PREFEREN
  * An {@link JobIntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread - for Build.VERSION_CODES.O and up.
  */
-public class WidgetUpdateJobIntentService extends JobIntentService {
-    public static final String LOG_TAG = WidgetUpdateJobIntentService.class.getName();
+public class WideWidgetUpdateJobIntentService extends JobIntentService {
+    public static final String LOG_TAG = WideWidgetUpdateJobIntentService.class.getName();
     public static final String ACTION_UPDATE_WEATHER_WIDGET_ONLINE =
             "com.example.android.androidxonlywidget.action.update_weather_widget_online";
     // base URL for the query the weather api (APIXU)
     private static final String APIXU_REQUEST_URL = "https://api.apixu.com/v1/current.json?";
     public static final String RECEIVER = "receiver";
     private static final int JOB_ID = 2;
-    // shared pref file for specific widget
-    public String widgetSharedPref;
-    public int widgetId;
+    public String widgetSharedPref; // shared pref file for specific widget
+    public int widgetId; // id for specific widget
 
     // with this method we receive instructions to update the widget
     public static void enqueueWork(Context context, ServiceResultReceiver workerResultReceiver, String action,
                                    int widgetId){
-        Intent intent = new Intent(context, WidgetUpdateJobIntentService.class);
+        Intent intent = new Intent(context, WideWidgetUpdateJobIntentService.class);
         intent.putExtra(RECEIVER, workerResultReceiver);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         intent.setAction(action);
-        JobIntentService.enqueueWork(context, WidgetUpdateJobIntentService.class, JOB_ID, intent);
+        enqueueWork(context, WideWidgetUpdateJobIntentService.class, JOB_ID, intent);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class WidgetUpdateJobIntentService extends JobIntentService {
         } else {
             weather = WidgetQueryUtils.fetchWeather(createURI()); // fetch the weather data
         }
-        WeatherWidgetProvider.updateAppWidget(this, appWidgetManager, weather, widgetId);
+        WeatherWideWidgetProvider.updateAppWidget(this, appWidgetManager, weather, widgetId);
     }
 
     public String createURI() {
@@ -113,7 +112,7 @@ public class WidgetUpdateJobIntentService extends JobIntentService {
 
     // Helper methods related to requesting and receiving current weather from APIXU
     private static class WidgetQueryUtils {
-        private static final String LOG_TAG = WidgetUpdateJobIntentService.WidgetQueryUtils.class.getName();
+        private static final String LOG_TAG = WideWidgetUpdateJobIntentService.WidgetQueryUtils.class.getName();
         private static final int READ_TIMEOUT = 10000; /* milliseconds */
         private static final int CONNECT_TIMEOUT = 15000; /* milliseconds */
 

@@ -21,8 +21,8 @@ import static com.example.android.andoidxonlywidget.AppConstants.URI_SCHEME;
 /**
  * Implementation of App Widget functionality.
  */
-public class WeatherWidgetProvider extends AppWidgetProvider {
-    public static final String LOG_TAG = WeatherWidgetProvider.class.getName();
+public class WeatherWideWidgetProvider extends AppWidgetProvider {
+    public static final String LOG_TAG = WeatherWideWidgetProvider.class.getName();
     public static final String ACTION_UPDATE_WEATHER_WIDGET_ONLINE =
             "com.example.android.androidxonlywidget.action.update_weather_widget_online";
 
@@ -54,7 +54,7 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weather_widget);
         // Set the click handler to open MainActivity and send the widget id and provider component name to the activity
         Intent intent = new Intent(context, MainActivity.class);
-        ComponentName comp = new ComponentName(context.getPackageName(), WeatherWidgetProvider.class.getName());
+        ComponentName comp = new ComponentName(context.getPackageName(), WeatherWideWidgetProvider.class.getName());
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, comp.toString());
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         // the following 4 lines make sure each widget installment will get its own intent with its own data
@@ -145,14 +145,14 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_wide_view);
         // Set the click handler to open the MainActivity
         Intent intent = new Intent(context, MainActivity.class);
-        ComponentName comp = new ComponentName(context.getPackageName(), WeatherWidgetProvider.class.getName());
+        ComponentName comp = new ComponentName(context.getPackageName(), WeatherWideWidgetProvider.class.getName());
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, comp.toString());
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         Uri data = Uri.withAppendedPath(
                 Uri.parse(URI_SCHEME + "://widget/id/provider")
                 , widgetId + "/" + comp);
                 //Uri.parse(URI_SCHEME + "://widget/id/")
-               //, String.valueOf(widgetId));
+                //, String.valueOf(widgetId));
         intent.setData(data);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -263,19 +263,17 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
         ServiceResultReceiver mServiceResultReceiver = new ServiceResultReceiver(new Handler());
         for (int i = 0; i < appWidgetIds.length; i++) {
             int appWidgetId = appWidgetIds[i];
-            Log.i(LOG_TAG, "onUpdate widget id is: " + appWidgetId);
-            WidgetUpdateJobIntentService.enqueueWork(context, mServiceResultReceiver,
+            WideWidgetUpdateJobIntentService.enqueueWork(context, mServiceResultReceiver,
                     ACTION_UPDATE_WEATHER_WIDGET_ONLINE, appWidgetId);
         }
     }
-
 
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-        RemoteViews defaultViews = new RemoteViews(context.getPackageName(), R.layout.weather_widget);
-        ComponentName comp = new ComponentName(context.getPackageName(), WeatherWidgetProvider.class.getName());
+        RemoteViews defaultViews = new RemoteViews(context.getPackageName(), R.layout.widget_wide_view);
+        ComponentName comp = new ComponentName(context.getPackageName(), WeatherWideWidgetProvider.class.getName());
         int[] appWidgetIds = mgr.getAppWidgetIds(comp);
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
@@ -306,7 +304,7 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId,
                                           Bundle newOptions) {
         ServiceResultReceiver mServiceResultReceiver = new ServiceResultReceiver(new Handler());
-        WidgetUpdateJobIntentService.enqueueWork(context, mServiceResultReceiver,
+        WideWidgetUpdateJobIntentService.enqueueWork(context, mServiceResultReceiver,
                 ACTION_UPDATE_WEATHER_WIDGET_ONLINE, appWidgetId);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }

@@ -2,7 +2,6 @@ package com.example.android.andoidxonlywidget;
 
 import android.app.LoaderManager;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
@@ -11,26 +10,23 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import static com.example.android.andoidxonlywidget.AppConstants.SHARED_PREFERENCES;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Weather>> {
     // Tag for the log messages
@@ -51,17 +47,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout mySwipeRefreshLayout;
     private LoaderManager loaderManager; // loadManager to be used in this activity
-    private static final String SHARED_PREFERENCES = "androidxonlywidget"; // name for sharedPreferences location
     // Adapter for the forecast weather days  (i.e. items in the array)
     private WeatherAdapter mAdapter;
     public ArrayList<Weather> weathers = new ArrayList<>();
+    private int widgetId = 0; // for the specific widget id
+    private String widgetProvider = "";// which provider built the specific widget
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Log.i(LOG_TAG, "onCreate was called");
+        widgetProvider = getIntent().getStringExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER);
+        widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);
         // set a new adapter for the list
         mAdapter = new WeatherAdapter(getApplicationContext(), weathers);
         // vertical RecyclerView
@@ -117,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // the loader constructor - creates the uri according to user preferences - your api key, the city and the number of days for forecast
     @Override
     public Loader<List<Weather>> onCreateLoader(int id, Bundle args) {
+        Log.i(LOG_TAG, "onCreateLoader activated");
+
         String queryCity = restorePreferences(getString(R.string.settings_city_key));
         if (queryCity.isEmpty())
             queryCity = getResources().getString(R.string.settings_city_default);
@@ -134,7 +135,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // This method to restore the custom preferences data
     public String restorePreferences(String key) {
-        SharedPreferences myPreferences = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences myPreferences = getSharedPreferences(SHARED_PREFERENCES + widgetId,
+                Context.MODE_PRIVATE);
         if (myPreferences.contains(key))
             return myPreferences.getString(key, "");
         else return "";
@@ -166,16 +168,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // updating the widget with the loaded data
     private void updateWeatherWidget() {
         if (weathers == null || weathers.isEmpty()) {
-            Log.i(LOG_TAG, "updateWeatherWidget activated weathers null");
             return;
         } else {
-            Log.i(LOG_TAG, "updateWeatherWidget activated weathers not empty");
             Weather weather = weathers.get(0);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-            // update the weather widgets
-            WeatherWidgetProvider.updateWeatherWidgets(this, AppWidgetManager.getInstance(this),
-                    weather, appWidgetManager.getAppWidgetIds
-                            (new ComponentName(this, WeatherWidgetProvider.class)));
+            // update the relevant weather widget
+            if (widgetProvider.contains("WeatherWideWidgetProvider")) {
+                WeatherWideWidgetProvider.updateAppWidget(this, appWidgetManager, weather, widgetId);
+            } else {
+                WeatherWidgetProvider.updateAppWidget(this, appWidgetManager, weather, widgetId);
+            }
         }
     }
 
@@ -199,9 +201,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         switch (id) {
             case R.id.action_settings:
                 // start SettingActivity file when user click on settings
-                Intent settingsIntent = new Intent(this, SettingActivity.class);
-                startActivity(settingsIntent);
-                return true;
+                if (widgetProvider.contains("WeatherWideWidgetProvider")) {
+                    Intent settingsIntent = new Intent(this, SettingActivityWide.class);
+                    settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+                    settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, widgetProvider);
+                    settingsIntent.putExtra("from_main", 1);
+                    startActivity(settingsIntent);
+                    return true;
+                } else {
+                    Intent settingsIntent = new Intent(this, SettingActivity.class);
+                    settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+                    settingsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, widgetProvider);
+                    settingsIntent.putExtra("from_main", 1);
+                    startActivity(settingsIntent);
+                    return true;
+                }
             // inflate about window when the user click on about
             case R.id.action_about:
                 showAbout();
@@ -221,6 +235,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         builder.create();
         builder.show();
     }
-
 
 }

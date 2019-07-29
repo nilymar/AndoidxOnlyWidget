@@ -4,14 +4,17 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+
 import static com.example.android.andoidxonlywidget.AppConstants.GPS_REQUEST;
 import static com.example.android.andoidxonlywidget.WidgetUpdateJobIntentService.ACTION_UPDATE_WEATHER_WIDGET_ONLINE;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivityWide extends AppCompatActivity {
     int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID; // the id of the specific widget
     String comp = "";// the component name for the provider class
     int firstTime = 0; // indicator for entry to settingActivity - i.e. is it first time (while installing) or not
@@ -70,7 +73,7 @@ public class SettingActivity extends AppCompatActivity {
                 NavUtils.navigateUpTo(this, upIntent);
         } else {// if it is on widget installation - update the widget if setting was changed and close the app
             ServiceResultReceiver mServiceResultReceiver = new ServiceResultReceiver(new Handler());
-            WidgetUpdateJobIntentService.enqueueWork(this, mServiceResultReceiver,
+            WideWidgetUpdateJobIntentService.enqueueWork(this, mServiceResultReceiver,
                     ACTION_UPDATE_WEATHER_WIDGET_ONLINE, appWidgetId);
             // need to sent the widget id as result intent
             Intent resultValue = new Intent();
