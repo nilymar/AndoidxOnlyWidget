@@ -46,5 +46,4 @@ added two widget previews (i.e. in the widgets drawer), using 2 provider_info fi
 **************************************************************************************************************************************
 
 
-
-![ezgif com-resize (5)](https://user-images.githubusercontent.com/33417968/61808641-79717a80-ae44-11e9-906a-4561f72b63c2.gif)
+![ezgif com-resize (6)](https://user-images.githubusercontent.com/33417968/62054810-ff196f80-b222-11e9-9bb0-9711bb053f20.gif)
