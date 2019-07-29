@@ -29,5 +29,22 @@ https://github.com/nilymar/TestingAndroidxPreferences)
 
 **************************************************************************************************************************************
 
+added switch preference that allow you to get the location for the weather from the device - you can see the sample project for fetching
+location from the device here: https://github.com/nilymar/ExampleDeviceLocation
+the location is fetched once and replace the location set in the 'city' preference. the widget will update with that location, and won't 
+try to fetch location from the device each time it runs its update
 
-![ezgif com-resize (2)](https://user-images.githubusercontent.com/33417968/60444587-3269de00-9c26-11e9-8663-22e3cca5d08e.gif)
+**************************************************************************************************************************************
+
+added multiple widgets functionality - i.e. - you can install multiple widget on home screen, with different settings
+
+**************************************************************************************************************************************
+
+added two widget previews (i.e. in the widgets drawer), using 2 provider_info files, 2 provider java files, 2 jobService files and 
+2 setting (configuration) files. used the save layout files as before, added setting, receiver and sevice to manifest
+
+**************************************************************************************************************************************
+
+
+
+![ezgif com-resize (5)](https://user-images.githubusercontent.com/33417968/61808641-79717a80-ae44-11e9-906a-4561f72b63c2.gif)
