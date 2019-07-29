@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialLayout="@layout/weather_widget"
-    android:minWidth="@dimen/_40sdp"
+    android:initialLayout="@layout/widget_wide_view"
+    android:minWidth="@dimen/_200sdp"
     android:minHeight="@dimen/_40sdp"
-    android:previewImage="@drawable/small_widget"
+    android:previewImage="@drawable/wide_widget"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="180000"
-    android:configure="com.example.android.andoidxonlywidget.SettingActivity"
+    android:configure="com.example.android.andoidxonlywidget.SettingActivityWide"
     android:widgetCategory="home_screen">
 
 </appwidget-provider>
