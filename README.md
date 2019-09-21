@@ -1,5 +1,9 @@
 # AndoidxOnlyWidget
 
+*************************************************************************************************************************************
+THE API IS GOING TO CHANGE SOON  - YOU WILL NEED TO ADJUST THE CODE TO USE IT
+*************************************************************************************************************************************
+
 a widget only app, based on the weather app in here: https://github.com/nilymar/ExampleWeatherAPI
 
 this app is a widget only app - i.e. the app won't appear in the apps drawer after installment, only in the widgets drawer.
